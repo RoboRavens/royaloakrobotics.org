@@ -1,0 +1,26 @@
+name: SFTP Push on Commit
+
+on:
+  push:
+    branches:
+      - main  # Trigger only on pushes to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: SFTP Deploy
+        uses: Dylan700/sftp-upload-action@latest
+        with:
+          server: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }} # Or use 'key' for SSH keys
+          port: 22
+          # Replace './' with the local folder to upload, and 'remote-path' with your server path
+          uploads: |
+            ./ => / 
+          ignore: |
+            *.git
